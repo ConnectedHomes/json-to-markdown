@@ -21,7 +21,10 @@ if (!defined(argv._[0]) || defined(argv.h) || defined(argv.help)) {
 }
 
 var filepath = argv._[0];
-var schema = JSON.parse(fs.readFileSync(filepath));
+var destDir = argv._[1];
+process.stdout.write("filepath: "+filepath+"\n");
+var onlyPath = require('path').resolve(filepath);
+process.stdout.write("onlyPath: "+onlyPath+"\n");
 
 var autoLink = enums.autoLinkOption.off;
 switch (defaultValue(argv.a, argv.autoLink)) {
@@ -42,15 +45,43 @@ ignorableTypesString = ignorableTypesString.replace(/'/g, '\"');
 ignorableTypesString = ignorableTypesString.replace(/"/g, '\"');
 var ignorableTypes = JSON.parse(ignorableTypesString);
 
-process.stdout.write(generateMarkdown({
-    schema: schema,
+
+var files = fs.readdirSync(argv._[0]);
+
+for (var i = 0; i < files.length; i++) {
+	var stats = fs.statSync(path.join(onlyPath,files[i]));
+	if (stats.isDirectory()){
+		continue;
+	}
+
+	process.stdout.write("Filepath:"+path.join(onlyPath,files[i])+"\n");
+	process.stdout.write("File from files: "+files[i]+"\n");
+	process.stdout.write("Iteration #: "+i+" out of " + files.length +"\n");
+	process.stdout.write("basePath = " +path.dirname(filepath)+"\n");
+	
+
+
+
+fs.writeFile(path.join(destDir, files[i]+".md"), generateMarkdown({
+    schema: JSON.parse(fs.readFileSync(path.join(onlyPath+"\\"+files[i]))),
     filePath: filepath,
     fileName: path.basename(filepath),
-    basePath: path.dirname(filepath),
+    basePath: filepath,
     headerLevel: defaultValue(defaultValue(argv.l, argv.headerLevel), 1),
     schemaRelativeBasePath: defaultValue(defaultValue(argv.p, argv.schemaPath), null),
     debug: defaultValue(defaultValue(argv.d, argv.debug), null),
     suppressWarnings: defaultValue(defaultValue(argv.w, argv.suppressWarnings), false),
     autoLink: autoLink,
     ignorableTypes: ignorableTypes
-}));
+	}),  function(err) {
+			if(err) {
+				return console.log(err);
+			}	
+		}
+);
+
+}
+
+
+
+
