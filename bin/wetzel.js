@@ -22,9 +22,9 @@ if (!defined(argv._[0]) || defined(argv.h) || defined(argv.help)) {
 
 var filepath = argv._[0];
 var destDir = argv._[1];
-process.stdout.write("filepath: "+filepath+"\n");
+//process.stdout.write("filepath: "+filepath+"\n");
 var onlyPath = require('path').resolve(filepath);
-process.stdout.write("onlyPath: "+onlyPath+"\n");
+//process.stdout.write("onlyPath: "+onlyPath+"\n");
 
 var autoLink = enums.autoLinkOption.off;
 switch (defaultValue(argv.a, argv.autoLink)) {
@@ -48,16 +48,20 @@ var ignorableTypes = JSON.parse(ignorableTypesString);
 
 var files = fs.readdirSync(argv._[0]);
 
+if (!fs.existsSync(destDir)){
+    fs.mkdirSync(destDir);
+}
+
 for (var i = 0; i < files.length; i++) {
 	var stats = fs.statSync(path.join(onlyPath,files[i]));
 	if (stats.isDirectory()){
 		continue;
 	}
 
-	process.stdout.write("Filepath:"+path.join(onlyPath,files[i])+"\n");
-	process.stdout.write("File from files: "+files[i]+"\n");
-	process.stdout.write("Iteration #: "+i+" out of " + files.length +"\n");
-	process.stdout.write("basePath = " +path.dirname(filepath)+"\n");
+//	process.stdout.write("Filepath:"+path.join(onlyPath,files[i])+"\n");
+//	process.stdout.write("File from files: "+files[i]+"\n");
+//	process.stdout.write("Iteration #: "+i+" out of " + files.length +"\n");
+//	process.stdout.write("basePath = " +path.dirname(filepath)+"\n");
 	
 
 
