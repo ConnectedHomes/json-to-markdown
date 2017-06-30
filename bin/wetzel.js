@@ -67,7 +67,7 @@ for (var i = 0; i < files.length; i++) {
 
 
 fs.writeFile(path.join(destDir, files[i]+".md"), generateMarkdown({
-    schema: JSON.parse(fs.readFileSync(path.join(onlyPath+"\\"+files[i]))),
+    schema: JSON.parse(fs.readFileSync(path.join(onlyPath,files[i]))),
     filePath: filepath,
     fileName: path.basename(filepath),
     basePath: filepath,
